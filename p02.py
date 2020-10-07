@@ -26,7 +26,6 @@ def logr_predict_proba(x, y):
 
 def logr_predict(x, w):
     return [1 if i >= 0.5 else 0 for i in logr_predict_proba(x, w)]
-
 '''
 x = [[3, 7, 8, 4, 1],
 [3, 0, 7, 9, 5],
@@ -39,6 +38,38 @@ x = [[3, 7, 8, 4, 1],
 [2, 2, 1, 7, 3],
 [1, 1, 3, 2, 6]]
 w = [1, 1, -1, 1, -2]
-print(logr_predict(x, w))
+print(logr_predict_proba(x, w))
 '''
 
+def logr_cost(x, y, w):
+    n = len(y)
+    result = 0
+
+    for i in range(n):
+        result += y[i] * math.log(logr_predict_proba([x[i]], w)[0]) + (1 - y[i]) * (math.log(1 - logr_predict_proba([x[i]], w)[0]))
+    return result * (-1 / n)
+
+#x  = [[7, 4, 8], [0, 0, 2], [7, 7, 4], [3, 0, 8]]
+#y = [0, 1, 0, 1]
+#w = [-1, -2, 1]
+#print(logr_cost(x, y, w))
+
+def logr_gradient(x, y, w):
+    n = len(y)
+    g_v = []
+    temp = []
+    result = 0
+
+    for i in range(n):
+        temp.append(y[i] - logr_predict_proba([x[i]], w)[0])
+
+    for j in range(len(x)):
+        for k in range(len(x[i])):
+            result += temp[j] * -x[j][k]
+        g_v.append((1 / n) * result)
+        result = 0
+    return g_v
+x  = [[7, 4, 8], [0, 0, 2], [7, 7, 4], [3, 0, 8]]
+y = [0, 1, 0, 1]
+w = [-1, -2, 1]
+print(logr_gradient(x, y, w))
